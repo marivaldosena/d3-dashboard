@@ -51,7 +51,7 @@ function drawBar(data, dataType, country) {
     .domain(d3.extent(data, d => d.year))
 
   let yScale = d3.scaleLinear()
-    .domain([0, d3.max(countryData, d +. d[dataType])])
+    .domain([0, d3.max(countryData, d => d[dataType])])
     .range([height - padding.bottom, padding.top])
 
   let barWidth = xScale(xScale.domain()[0] + 1) - xScale.range()[0]
@@ -84,4 +84,37 @@ function drawBar(data, dataType, country) {
 
   d3.select('.bar-title')
     .text(barTitle)
+
+  const t = d3.transition()
+    .duration(1000)
+    .ease(d3.easeBounceOut)
+  
+  const update = bar
+    .selectAll('.bar')
+    .data(countryData)
+
+  update
+    .exit()
+    .transition(t)
+      .delay((d, i, nodes) => (nodes.length - i - 1) * 100)
+      .attr('y', height - padding.bottom)
+      .attr('height', 0)
+      .remove()
+
+  update
+    .enter()
+    .append('rect')
+      .classed('bar', true)
+      .attr('y', height - padding.bottom)
+      .attr('height', 0)
+    .merge(update)
+      .attr('x', d => (xScale(d.year) + xScale(d.year - 1)) / 2)
+      .attr('width', barWith - barPadding)
+      .transition(t)
+      .delay((d, i) => i * 100)
+        .attr('y', d => yScale(d[dataType]))
+        .attr('height', d => height - padding.bottom - yScale(d[dataType]))
+
+    
+
 }

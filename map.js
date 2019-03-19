@@ -4,8 +4,8 @@ function createMap(width, height) {
       .attr('height', height)
     .append('text')
       .attr('x', width / 2)
-      .attr('y', '1rem')
-      .attr('font-size', '1.5rem')
+      .attr('y', '1em')
+      .attr('font-size', '1.5em')
       .style('text-anchor', 'middle')
       .classed('map-title', true)
 }

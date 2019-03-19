@@ -9,7 +9,7 @@
   <title>D3.js Dashboard</title>
 </head>
 <body>
-  <nav class="nav">
+  <nav id="nav">
     <h2>D3.js | CO<sub>2</sub> Dashboard</h2>
     <p>
       Explore CO<sub>2</sub> emissions by year.
@@ -36,10 +36,9 @@
   </section>
   <div class="tooltip"></div>
   <script src="https://d3js.org/d3.v4.js"></script>
-  <script src="https://unpkg.com/topojson@3"></script>
-  <script src="pie.js"></script>
+  <script src="https://unpkg.com/topojson@3" src="pie.js"></script>
   <script src="bar.js"></script>
   <script src="map.js"></script>
-  <script src="app.js"></script>
+  <script defer src="app.js"></script>
 </body>
 </html>

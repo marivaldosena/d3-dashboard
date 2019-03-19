@@ -19,14 +19,15 @@ function drawMap(geoData, climateData, year, dataType) {
         +map.attr('width') / 2,
         +map.attr('height') / 1.4
       ])
-
-  const path = d3.geoPath().projection(projection)
-
-  d3.select('#year-val').text(year)
+      
+      const path = d3.geoPath().projection(projection)
+      
+      d3.select('#year-val').text(year)
+      
   
   geoData.forEach(d => {
     const countries = climateData.filter(row => row.countryCode === d.id)
-    const name = ''
+    let name = ''
     
     if (countries.length > 0) {
       name = countries[0].country
@@ -49,15 +50,15 @@ function drawMap(geoData, climateData, year, dataType) {
   const update = map.selectAll('.country').data(geoData)
       
   update
-    .enter()
-    .append('path')
-      .classed('country', true)
-      .attr('d', path)
-    .merge(update)
-      .transition()
-      .duration(750)
-      .attr('fill', d => {
-        const val = d.properties[dataType]
+  .enter()
+  .append('path')
+  .classed('country', true)
+  .attr('d', path)
+  .merge(update)
+  .transition()
+  .duration(750)
+  .attr('fill', d => {
+    const val = d.properties[dataType]
         return val ? mapColorScale(val) : '#ccc'
       })
       

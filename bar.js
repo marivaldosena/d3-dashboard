@@ -49,6 +49,7 @@ function drawBar(data, dataType, country) {
 
   let xScale = d3.scaleLinear()
     .domain(d3.extent(data, d => d.year))
+    .range([padding.left, width - padding.right])
 
   let yScale = d3.scaleLinear()
     .domain([0, d3.max(countryData, d => d[dataType])])
@@ -56,7 +57,7 @@ function drawBar(data, dataType, country) {
 
   let barWidth = xScale(xScale.domain()[0] + 1) - xScale.range()[0]
 
-  let xAxis = d3.axisBottom(xScale)
+  const xAxis = d3.axisBottom(xScale)
     .tickFormat(d3.format('.0f'))
 
   d3.select('.x-axis')
@@ -109,7 +110,7 @@ function drawBar(data, dataType, country) {
       .attr('height', 0)
     .merge(update)
       .attr('x', d => (xScale(d.year) + xScale(d.year - 1)) / 2)
-      .attr('width', barWith - barPadding)
+      .attr('width', barWidth - barPadding)
       .transition(t)
       .delay((d, i) => i * 100)
         .attr('y', d => yScale(d[dataType]))

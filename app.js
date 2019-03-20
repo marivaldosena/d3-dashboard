@@ -52,4 +52,60 @@ d3.queue()
         drawMap(geoData, data, currentYear, currentDataType)
         drawBar(data, currentDataType, country)
       })
+
+    d3.selectAll('svg')
+      .on('mousemove touchmove', updateTooltip)
+
+    function updateTooltip() {
+      const tooltip = d3.select('.tooltip')
+      let tgt = d3.select(d3.event.target)
+      let isCountry = tgt.classed('country')
+      let isBar = tgt.classed('bar')
+      let isArc = tgt.classed('arc')
+      let dataType = d3.select('input:checked').property('value')
+      let units = dataType === 'emissions' ?
+        'thousand metric tons' :
+        'metric tons per capita'
+
+      let data;
+      let percentage = '';
+
+      if (isCountry) data = tgt.data()[0].properties
+      if (isArc) {
+        data = tgt.data()[0].data
+        percentage = `<p>Percentage of total: ${getPercentage(tgt.data()[0])}</p>`
+      }
+      if (isBar) data = tgt.data()[0]
+
+      tooltip
+        .style('opacity', +(isCountry || isArc || isBar))
+        .style('left', (d3.event.pageX - tooltip.node().offsetWidth / 2) + 'px')
+        .style('top', (d3.event.pageY - tooltip.node().offsetHeight - 10) + 'px')
+
+      if (data) {
+        let dataValue = data[dataType] ? 
+          `${data[dataType].toLocaleString()} ${units}` :
+          `Data Not Available`
+
+        tooltip
+          .html(`
+            <p>Country ${data.country}</p>
+            <p>${formatDataType(dataType)}: ${dataValue}</p>
+            <p>Year: ${data.year || d3.select('#year').property('value')}</p>
+            ${percentage}
+          `)
+      }
+    }
+    
+    function formatDataType(key) {
+      return key[0].toUpperCase() + key.slice(1).replace(/[A-Z]/g, c => ' ' + c)
+    }
+
+    function getPercentage(d) {
+      let angle = d.endAngle - d.startAngle
+      let fraction = 100 * angle / (Math.PI * 2)
+
+      return `${fraction.toFixed(2)}%`
+    }
+
   })

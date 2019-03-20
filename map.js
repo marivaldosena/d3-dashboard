@@ -50,17 +50,27 @@ function drawMap(geoData, climateData, year, dataType) {
   const update = map.selectAll('.country').data(geoData)
       
   update
-  .enter()
-  .append('path')
-  .classed('country', true)
-  .attr('d', path)
-  .merge(update)
-  .transition()
-  .duration(750)
-  .attr('fill', d => {
-    const val = d.properties[dataType]
-        return val ? mapColorScale(val) : '#ccc'
+    .enter()
+    .append('path')
+      .classed('country', true)
+      .attr('d', path)
+      .on('click', function() {
+        let currentDataType = d3.select('input:checked').property('value')
+        let country = d3.select(this)
+        let isActive = country.classed('active')
+        let countryName = isActive ? '' : country.data()[0].properties.country
+        drawBar(climateData, currentDataType, countryName)
+        highlightBars(+d3.select('#year').property('value'))
+        d3.selectAll('.country').classed('active', false)
+        country.classed('active', ! isActive)
       })
+    .merge(update)
+      .transition()
+      .duration(750)
+      .attr('fill', d => {
+        const val = d.properties[dataType]
+          return val ? mapColorScale(val) : '#ccc'
+        })
       
   d3.select('.map-title')
       .text(`Carbon dioxide ${graphTitle(dataType)}, ${year}`)
